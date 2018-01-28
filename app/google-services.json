@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "430184914956",
+    "firebase_url": "https://flickering-fire-8586.firebaseio.com",
+    "project_id": "flickering-fire-8586",
+    "storage_bucket": "flickering-fire-8586.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:430184914956:android:c9d8318cd69b0323",
+        "android_client_info": {
+          "package_name": "com.codegene.femicodes.ozeal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "430184914956-b1b7s7v4q9th284rfbdl3tlvpb61s277.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.codegene.femicodes.ozeal",
+            "certificate_hash": "29686138a768b75e7dec7cc076471b40fa509f1c"
+          }
+        },
+        {
+          "client_id": "430184914956-9b9vucn7ifpsjrdvam7v86levjh6q54e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAprzTKn01gjGqB589Q7RN3o_-cMT5yDQE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "430184914956-9b9vucn7ifpsjrdvam7v86levjh6q54e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
