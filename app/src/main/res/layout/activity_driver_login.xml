@@ -26,21 +26,34 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <EditText
-            android:id="@+id/email"
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="email"
-            android:inputType="textEmailAddress"
-            android:textColorHint="#fff" />
+            android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/password"
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="email"
+                android:inputType="textEmailAddress"
+                android:textColor="#fff"
+                android:textColorHint="#fff" />
+        </android.support.design.widget.TextInputLayout>
+
+
+        <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="password"
-            android:inputType="textPassword"
-            android:textColorHint="#fff" />
+            android:layout_height="wrap_content">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="password"
+                android:inputType="textPassword"
+                android:textColor="#fff"
+                android:textColorHint="#fff" />
+        </android.support.design.widget.TextInputLayout>
 
         <Button
             android:id="@+id/login"

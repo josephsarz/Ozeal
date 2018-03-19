@@ -14,6 +14,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         mDriver = findViewById(R.id.driver);
         mCustomer = findViewById(R.id.customer);
 
@@ -23,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, DriverLoginActivity.class);
                 startActivity(intent);
-                finish();
+
                 return;
             }
         });
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, CustomerLoginActivity.class);
                 startActivity(intent);
-                finish();
+
                 return;
             }
         });

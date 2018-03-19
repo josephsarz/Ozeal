@@ -1,6 +1,7 @@
 package com.codegene.femicodes.ozeal;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -38,6 +39,7 @@ public class DriverSettingsActivity extends AppCompatActivity {
     private EditText mNameField, mPhoneField, mCarField;
 
     private Button mBack, mConfirm;
+    private ProgressDialog progressDialog;
 
     private ImageView mProfileImage;
 
@@ -61,6 +63,8 @@ public class DriverSettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_settings);
 
+        getSupportActionBar().setTitle("Account Setting");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mNameField = findViewById(R.id.name);
         mPhoneField = findViewById(R.id.phone);
@@ -151,6 +155,12 @@ public class DriverSettingsActivity extends AppCompatActivity {
 
 
     private void saveUserInformation() {
+
+        progressDialog = new ProgressDialog(DriverSettingsActivity.this);
+        progressDialog.setMessage("Loading..."); // Setting Message
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER); // Progress Dialog Style Spinner
+        progressDialog.show(); // Display Progress Dialog
+        progressDialog.setCancelable(false);
         mName = mNameField.getText().toString();
         mPhone = mPhoneField.getText().toString();
         mCar = mCarField.getText().toString();
@@ -190,7 +200,9 @@ public class DriverSettingsActivity extends AppCompatActivity {
             uploadTask.addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
+                    progressDialog.dismiss();
                     finish();
+
                     return;
                 }
             });
@@ -202,15 +214,16 @@ public class DriverSettingsActivity extends AppCompatActivity {
                     Map newImage = new HashMap();
                     newImage.put("profileImageUrl", downloadUrl.toString());
                     mDriverDatabase.updateChildren(newImage);
-
+                    progressDialog.dismiss();
                     finish();
                     return;
                 }
             });
         } else {
+            progressDialog.dismiss();
             finish();
         }
-
+        progressDialog.dismiss();
     }
 
     @Override

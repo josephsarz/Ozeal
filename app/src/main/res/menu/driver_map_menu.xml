@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_history_driver"
+        android:orderInCategory="100"
+        android:title="History"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_settings_driver"
+        android:orderInCategory="200"
+        android:title="Settings"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_logout_driver"
+        android:orderInCategory="300"
+        android:title="Logout"
+        app:showAsAction="never" />
+
+</menu>

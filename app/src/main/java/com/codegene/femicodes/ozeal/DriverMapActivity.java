@@ -8,7 +8,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -52,7 +54,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DriverMapActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener, RoutingListener {
+public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener, RoutingListener {
 
     private static final int[] COLORS = new int[]{R.color.primary_dark_material_light};
     final int LOCATION_REQUEST_CODE = 1;
@@ -61,7 +63,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     LocationRequest mLocationRequest;
     Marker pickupMarker;
     private GoogleMap mMap;
-    private Button mLogout, mSettings, mRideStatus, mHistory;
+    private Button mRideStatus;
     private Switch mWorkingSwitch;
     private int status = 0;
     private String customerId = "", destination;
@@ -80,6 +82,9 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_map);
+
+        getSupportActionBar().setTitle("Driver's Map");
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         polylines = new ArrayList<>();
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -112,10 +117,8 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
             }
         });
 
-        mSettings = findViewById(R.id.settings);
-        mLogout = findViewById(R.id.logout);
+
         mRideStatus = findViewById(R.id.rideStatus);
-        mHistory = findViewById(R.id.history);
         mRideStatus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,37 +140,6 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
             }
         });
 
-        mLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isLoggingOut = true;
-
-                disconnectDriver();
-
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(DriverMapActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-                return;
-            }
-        });
-        mSettings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(DriverMapActivity.this, DriverSettingsActivity.class);
-                startActivity(intent);
-                return;
-            }
-        });
-        mHistory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(DriverMapActivity.this, HistoryActivity.class);
-                intent.putExtra("customerOrDriver", "Drivers");
-                startActivity(intent);
-                return;
-            }
-        });
         getAssignedCustomer();
     }
 
@@ -328,7 +300,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         customerRef.child(requestId).setValue(true);
 
         HashMap map = new HashMap();
-        map.put("driver", userId);
+        map.put("com/codegene/femicodes/ozeal/driver", userId);
         map.put("customer", customerId);
         map.put("rating", 0);
         map.put("timestamp", getCurrentTimestamp());
@@ -353,6 +325,8 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
+
+
         buildGoogleApiClient();
         mMap.setMyLocationEnabled(true);
     }
@@ -377,7 +351,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
             mLastLocation = location;
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 
             String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
             DatabaseReference refAvailable = FirebaseDatabase.getInstance().getReference("driversAvailable");
@@ -497,4 +471,42 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         polylines.clear();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.driver_map_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == R.id.action_history_driver) {
+
+            Intent intent = new Intent(DriverMapActivity.this, HistoryActivity.class);
+            intent.putExtra("customerOrDriver", "Drivers");
+            startActivity(intent);
+
+
+        } else if (id == R.id.action_settings_driver) {
+
+            Intent intent = new Intent(DriverMapActivity.this, DriverSettingsActivity.class);
+            startActivity(intent);
+
+        } else if (id == R.id.action_logout_driver) {
+
+            isLoggingOut = true;
+
+            disconnectDriver();
+
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(DriverMapActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }

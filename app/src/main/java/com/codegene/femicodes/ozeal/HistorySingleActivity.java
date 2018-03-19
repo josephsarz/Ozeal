@@ -110,7 +110,7 @@ public class HistorySingleActivity extends AppCompatActivity implements OnMapRea
                                 getUserInformation("Customers", customerId);
                             }
                         }
-                        if (child.getKey().equals("driver")) {
+                        if (child.getKey().equals("com/codegene/femicodes/ozeal/driver")) {
                             driverId = child.getValue().toString();
                             if (!driverId.equals(currentUserId)) {
                                 userDriverOrCustomer = "Customers";

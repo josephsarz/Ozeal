@@ -66,7 +66,7 @@ public class CustomerMap extends AppCompatActivity
     LocationRequest mLocationRequest;
     GeoQuery geoQuery;
     private GoogleMap mMap;
-    private Button mLogout, mRequest, mSettings, mHistory;
+    private Button mRequest;
     private LatLng pickupLocation;
     private Boolean requestBol = false;
     private Marker pickupMarker;
@@ -81,7 +81,7 @@ public class CustomerMap extends AppCompatActivity
     private int radius = 1;
     private Boolean driverFound = false;
     private String driverFoundID;
-    private Marker mDriverMarker;
+    private Marker mDriverMarker, destinationMarker;
     private DatabaseReference driverLocationRef;
     private ValueEventListener driverLocationRefListener;
     private DatabaseReference driveHasEndedRef;
@@ -131,10 +131,8 @@ public class CustomerMap extends AppCompatActivity
         mRadioGroup = findViewById(R.id.radioGroup);
         mRadioGroup.check(R.id.UberX);
 
-        mLogout = findViewById(R.id.logout);
         mRequest = findViewById(R.id.request);
-        mSettings = findViewById(R.id.settings);
-        mHistory = findViewById(R.id.history);
+
 
         mRequest.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,6 +143,8 @@ public class CustomerMap extends AppCompatActivity
 
 
                 } else {
+
+
                     int selectId = mRadioGroup.getCheckedRadioButtonId();
 
                     final RadioButton radioButton = findViewById(selectId);
@@ -168,7 +168,7 @@ public class CustomerMap extends AppCompatActivity
                     pickupMarker = mMap.addMarker(new MarkerOptions().position(pickupLocation).title("Pickup Here").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_pickup)));
 
                     mRequest.setText("Getting your Driver....");
-
+                    mRequest.setClickable(false);
                     getClosestDriver();
                 }
             }
@@ -178,6 +178,9 @@ public class CustomerMap extends AppCompatActivity
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
 
+
+        autocompleteFragment.setHint("where to?");
+
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
@@ -185,6 +188,23 @@ public class CustomerMap extends AppCompatActivity
                 destination = place.getName().toString();
                 destinationLatLng = place.getLatLng();
                 mRequestLayout.setVisibility(View.VISIBLE);
+//                Marker mDestinationMarker = mMap.addMarker(new MarkerOptions()
+//                        .position(destinationLatLng).title("Pickup Here").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_pickup)));
+
+                Marker mDestinationMarker = mMap.addMarker(new MarkerOptions()
+                        .position(destinationLatLng)
+                        .title("destination here")
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+
+//                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+//                builder.include(pickupMarker.getPosition());
+//                builder.include(mDestinationMarker.getPosition());
+//                LatLngBounds bounds = builder.build();
+//                int padding = 0; // offset from edges of the map in pixels
+//                CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+//                mMap.moveCamera(cu);
+//                mMap.animateCamera(cu);
+
                 Toast.makeText(CustomerMap.this, destination + "\n" + destinationLatLng, Toast.LENGTH_LONG).show();
             }
 
@@ -306,7 +326,7 @@ public class CustomerMap extends AppCompatActivity
                     }
 
 
-                    mDriverMarker = mMap.addMarker(new MarkerOptions().position(driverLatLng).title("your driver").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_car)));
+                    mDriverMarker = mMap.addMarker(new MarkerOptions().position(driverLatLng).title("your com.codegene.femicodes.ozeal.driver").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_car)));
                 }
 
             }
@@ -382,11 +402,14 @@ public class CustomerMap extends AppCompatActivity
         driverLocationRef.removeEventListener(driverLocationRefListener);
         driveHasEndedRef.removeEventListener(driveHasEndedRefListener);
 
+
+        //hide book taxi layout
+        mRequestLayout.setVisibility(View.GONE);
+
         if (driverFoundID != null) {
             DatabaseReference driverRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(driverFoundID).child("customerRequest");
             driverRef.removeValue();
             driverFoundID = null;
-
         }
         driverFound = false;
         radius = 1;
@@ -404,6 +427,8 @@ public class CustomerMap extends AppCompatActivity
         }
         mRequest.setText("call Uber");
 
+
+        //hide com.codegene.femicodes.ozeal.driver info
         mDriverInfo.setVisibility(View.GONE);
         mDriverName.setText("");
         mDriverPhone.setText("");
@@ -439,7 +464,7 @@ public class CustomerMap extends AppCompatActivity
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
         }
     }
 
@@ -508,8 +533,8 @@ public class CustomerMap extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_cancel_ride) {
+
         }
 
         return super.onOptionsItemSelected(item);

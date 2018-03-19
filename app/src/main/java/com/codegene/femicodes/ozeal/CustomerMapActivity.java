@@ -316,7 +316,7 @@ public class CustomerMapActivity extends AppCompatActivity implements OnMapReady
                     }
 
 
-                    mDriverMarker = mMap.addMarker(new MarkerOptions().position(driverLatLng).title("your driver").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_car)));
+                    mDriverMarker = mMap.addMarker(new MarkerOptions().position(driverLatLng).title("your com.codegene.femicodes.ozeal.driver").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_car)));
                 }
 
             }
