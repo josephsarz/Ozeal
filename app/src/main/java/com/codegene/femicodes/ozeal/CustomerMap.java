@@ -95,13 +95,11 @@ public class CustomerMap extends AppCompatActivity
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Home");
 
-
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -116,71 +114,27 @@ public class CustomerMap extends AppCompatActivity
         }
 
         destinationLatLng = new LatLng(0.0, 0.0);
-
         mDriverInfo = findViewById(R.id.driverInfo);
         mRequestLayout = findViewById(R.id.request_layout);
-
         mDriverProfileImage = findViewById(R.id.driverProfileImage);
-
         mDriverName = findViewById(R.id.driverName);
         mDriverPhone = findViewById(R.id.driverPhone);
         mDriverCar = findViewById(R.id.driverCar);
-
         mRatingBar = findViewById(R.id.ratingBar);
-
         mRadioGroup = findViewById(R.id.radioGroup);
         mRadioGroup.check(R.id.UberX);
-
         mRequest = findViewById(R.id.request);
-
 
         mRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (requestBol) {
-                    endRide();
-
-
-                } else {
-
-
-                    int selectId = mRadioGroup.getCheckedRadioButtonId();
-
-                    final RadioButton radioButton = findViewById(selectId);
-
-                    if (radioButton.getText() == null) {
-                        return;
-                    }
-
-                    requestService = radioButton.getText().toString();
-
-                    requestBol = true;
-
-                    String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("customerRequest");
-                    GeoFire geoFire = new GeoFire(ref);
-
-                    geoFire.setLocation(userId, new GeoLocation(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
-
-                    pickupLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                    pickupMarker = mMap.addMarker(new MarkerOptions().position(pickupLocation).title("Pickup Here").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_pickup)));
-
-                    mRequest.setText("Getting your Driver....");
-                    mRequest.setClickable(false);
-                    getClosestDriver();
-                }
+                requestRide();
             }
         });
 
-
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
-
-
         autocompleteFragment.setHint("where to?");
-
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
@@ -188,22 +142,10 @@ public class CustomerMap extends AppCompatActivity
                 destination = place.getName().toString();
                 destinationLatLng = place.getLatLng();
                 mRequestLayout.setVisibility(View.VISIBLE);
-//                Marker mDestinationMarker = mMap.addMarker(new MarkerOptions()
-//                        .position(destinationLatLng).title("Pickup Here").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_pickup)));
-
                 Marker mDestinationMarker = mMap.addMarker(new MarkerOptions()
                         .position(destinationLatLng)
                         .title("destination here")
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-
-//                LatLngBounds.Builder builder = new LatLngBounds.Builder();
-//                builder.include(pickupMarker.getPosition());
-//                builder.include(mDestinationMarker.getPosition());
-//                LatLngBounds bounds = builder.build();
-//                int padding = 0; // offset from edges of the map in pixels
-//                CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-//                mMap.moveCamera(cu);
-//                mMap.animateCamera(cu);
 
                 Toast.makeText(CustomerMap.this, destination + "\n" + destinationLatLng, Toast.LENGTH_LONG).show();
             }
@@ -214,6 +156,43 @@ public class CustomerMap extends AppCompatActivity
             }
         });
 
+    }
+
+    private void requestRide() {
+
+        if (requestBol) {
+            endRide();
+
+
+        } else {
+
+
+            int selectId = mRadioGroup.getCheckedRadioButtonId();
+
+            final RadioButton radioButton = findViewById(selectId);
+
+            if (radioButton.getText() == null) {
+                return;
+            }
+
+            requestService = radioButton.getText().toString();
+
+            requestBol = true;
+
+            String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("customerRequest");
+            GeoFire geoFire = new GeoFire(ref);
+
+            geoFire.setLocation(userId, new GeoLocation(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
+
+            pickupLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+            pickupMarker = mMap.addMarker(new MarkerOptions().position(pickupLocation).title("Pickup Here").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_pickup)));
+
+            mRequest.setText("Getting your Driver....");
+            mRequest.setClickable(false);
+            getClosestDriver();
+        }
     }
 
     private void getClosestDriver() {
@@ -396,6 +375,52 @@ public class CustomerMap extends AppCompatActivity
         });
     }
 
+    private void cancelRideRequest() {
+
+        requestBol = false;
+        geoQuery.removeAllListeners();
+        if (driverLocationRef != null) {
+            driverLocationRef.removeEventListener(driverLocationRefListener);
+        }
+        if (driveHasEndedRef != null) {
+            driveHasEndedRef.removeEventListener(driveHasEndedRefListener);
+        }
+
+        //hide book taxi layout
+        mRequestLayout.setVisibility(View.GONE);
+
+        if (driverFoundID != null) {
+            DatabaseReference driverRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Drivers").child(driverFoundID).child("customerRequest");
+            driverRef.removeValue();
+            driverFoundID = null;
+        }
+        driverFound = false;
+        radius = 1;
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("customerRequest");
+        GeoFire geoFire = new GeoFire(ref);
+        geoFire.removeLocation(userId);
+
+        if (pickupMarker != null) {
+            pickupMarker.remove();
+        }
+        if (mDriverMarker != null) {
+            mDriverMarker.remove();
+        }
+        mRequest.setText("call Uber");
+        mRequest.setClickable(true);
+
+
+        //hide com.codegene.femicodes.ozeal.driver info
+        mDriverInfo.setVisibility(View.GONE);
+        mDriverName.setText("");
+        mDriverPhone.setText("");
+        mDriverCar.setText("Destination: --");
+        mDriverProfileImage.setImageResource(R.mipmap.ic_default_user);
+
+    }
+
     private void endRide() {
         requestBol = false;
         geoQuery.removeAllListeners();
@@ -507,7 +532,6 @@ public class CustomerMap extends AppCompatActivity
         }
     }
 
-
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -534,11 +558,12 @@ public class CustomerMap extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_cancel_ride) {
-
+            cancelRideRequest();
         }
 
         return super.onOptionsItemSelected(item);
     }
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -557,7 +582,7 @@ public class CustomerMap extends AppCompatActivity
         } else if (id == R.id.nav_logout) {
 
             FirebaseAuth.getInstance().signOut();
-            Intent intent = new Intent(CustomerMap.this, MainActivity.class);
+            Intent intent = new Intent(CustomerMap.this, CustomerLoginActivity.class);
             startActivity(intent);
             finish();
 

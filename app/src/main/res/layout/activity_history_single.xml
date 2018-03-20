@@ -24,26 +24,96 @@
             android:layout_margin="20sp"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/rideLocation"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20sp"
-                android:text="From - To" />
+                android:orientation="horizontal">
 
-            <TextView
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20sp"
+                    android:layout_weight="1"
+                    android:text="Destination"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
+                <TextView
+                    android:id="@+id/rideLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20sp"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20sp"
+                    android:layout_weight="1"
+                    android:text="Distance"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
+
+                <TextView
                 android:id="@+id/rideDistance"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20sp"
-                android:text="distance" />
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20sp"
+                    android:layout_weight="1"
+                    android:text="Price"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
+                <TextView
+                    android:id="@+id/ridePrice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20sp"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20sp"
+                    android:layout_weight="1"
+                    android:text="Date"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
             <TextView
                 android:id="@+id/rideDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20sp"
-                android:text="date" />
+                android:layout_weight="1" />
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -93,9 +163,12 @@
             android:id="@+id/pay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@color/colorPrimary"
             android:enabled="false"
             android:text="Pay Here"
-            android:visibility="gone" />
+            android:textColor="#fff" />
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

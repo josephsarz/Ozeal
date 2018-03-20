@@ -1,6 +1,8 @@
+
 package com.codegene.femicodes.ozeal;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
@@ -51,6 +53,7 @@ public class HistorySingleActivity extends AppCompatActivity implements OnMapRea
     private TextView userPhone;
     private ImageView userImage;
     private RatingBar mRatingBar;
+    private TextView mRidePrice;
     private Button mPay;
     private DatabaseReference historyRideInfoDb;
     private LatLng destinationLatLng, pickupLatLng;
@@ -68,6 +71,7 @@ public class HistorySingleActivity extends AppCompatActivity implements OnMapRea
         setContentView(R.layout.activity_history_single);
         getSupportActionBar().setTitle("Ride Detail");
 
+
         polylines = new ArrayList<>();
 
         rideId = getIntent().getExtras().getString("rideId");
@@ -81,7 +85,7 @@ public class HistorySingleActivity extends AppCompatActivity implements OnMapRea
         rideDate = findViewById(R.id.rideDate);
         userName = findViewById(R.id.userName);
         userPhone = findViewById(R.id.userPhone);
-
+        mRidePrice = findViewById(R.id.ridePrice);
         userImage = findViewById(R.id.userImage);
 
         mRatingBar = findViewById(R.id.ratingBar);
@@ -94,7 +98,6 @@ public class HistorySingleActivity extends AppCompatActivity implements OnMapRea
         getRideInformation();
 
     }
-    //  .clientId(PayPalConfig.PAYPAL_CLIENT_ID);
 
     private void getRideInformation() {
         historyRideInfoDb.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -110,7 +113,7 @@ public class HistorySingleActivity extends AppCompatActivity implements OnMapRea
                                 getUserInformation("Customers", customerId);
                             }
                         }
-                        if (child.getKey().equals("com/codegene/femicodes/ozeal/driver")) {
+                        if (child.getKey().equals("driver")) {
                             driverId = child.getValue().toString();
                             if (!driverId.equals(currentUserId)) {
                                 userDriverOrCustomer = "Customers";
@@ -123,7 +126,6 @@ public class HistorySingleActivity extends AppCompatActivity implements OnMapRea
                         }
                         if (child.getKey().equals("rating")) {
                             mRatingBar.setRating(Integer.valueOf(child.getValue().toString()));
-
                         }
                         if (child.getKey().equals("customerPaid")) {
                             customerPaid = true;
@@ -131,8 +133,9 @@ public class HistorySingleActivity extends AppCompatActivity implements OnMapRea
                         if (child.getKey().equals("distance")) {
                             distance = child.getValue().toString();
                             rideDistance.setText(distance.substring(0, Math.min(distance.length(), 5)) + " km");
-                            ridePrice = Double.valueOf(distance) * 0.5;
-
+                            ridePrice = Double.valueOf(distance) * 50;
+                            int price = (int) Math.round(ridePrice);
+                            mRidePrice.setText(String.valueOf(price + " naira"));
                         }
                         if (child.getKey().equals("destination")) {
                             rideLocation.setText(child.getValue().toString());
@@ -165,6 +168,24 @@ public class HistorySingleActivity extends AppCompatActivity implements OnMapRea
                 mDriverRatingDb.child(rideId).setValue(rating);
             }
         });
+        if (customerPaid) {
+            mPay.setEnabled(false);
+        } else {
+            mPay.setEnabled(true);
+        }
+        mPay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                makePayment();
+            }
+        });
+    }
+
+    private void makePayment() {
+        Intent payintent = new Intent(getApplicationContext(), PaymentActivity.class);
+        payintent.putExtra("rideId", rideId);
+        payintent.putExtra("price", ridePrice);
+        startActivity(payintent);
     }
 
 

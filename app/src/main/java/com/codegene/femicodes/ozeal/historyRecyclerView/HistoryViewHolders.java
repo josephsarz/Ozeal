@@ -10,10 +10,6 @@ import com.codegene.femicodes.ozeal.HistorySingleActivity;
 import com.codegene.femicodes.ozeal.R;
 
 
-/**
- * Created by manel on 10/10/2017.
- */
-
 public class HistoryViewHolders extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     public TextView rideId;

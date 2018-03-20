@@ -1,37 +1,30 @@
 package com.codegene.femicodes.ozeal;
 
 import android.app.Application;
-import android.util.Log;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import co.paystack.android.PaystackSdk;
 
 /**
  * Created by Aghedo on 4/20/2017.
  */
 
 public class AppController extends Application {
-
-    public static final String TAG = AppController.class.getSimpleName();
+    String public_key = "pk_test_ad0753d2ecbfe2b45c27bc68334191138c172950";//Public Key Gotten From Settings#Developer/Api on Dashboard
 
     @Override
     public void onCreate() {
         super.onCreate();
-        // Toast.makeText(getBaseContext(), "App Controller started", Toast.LENGTH_LONG).show();
-        Log.d(TAG, "onCreate: App Controller Started");
+
+        //PayStack Initialization
+        PaystackSdk.initialize(getApplicationContext());
+        PaystackSdk.setPublicKey(public_key);//Public Key Initialization
+
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         DatabaseReference Ref = FirebaseDatabase.getInstance().getReference();
         Ref.keepSynced(true);
-
-//        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-//        if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-//            //All location services are disabled
-//            Toast.makeText(getApplicationContext(), "No internet Access", Toast.LENGTH_SHORT).show();
-//
-//        }else{
-//            Toast.makeText(getApplicationContext(), "All Clear boss", Toast.LENGTH_SHORT).show();
-//
-//        }
 
     }
 

@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.codegene.femicodes.ozeal.historyRecyclerView.HistoryAdapter;
 import com.codegene.femicodes.ozeal.historyRecyclerView.HistoryObject;
@@ -25,13 +26,10 @@ import java.util.Locale;
 
 public class HistoryActivity extends AppCompatActivity {
     private String customerOrDriver, userId;
-
     private RecyclerView mHistoryRecyclerView;
     private RecyclerView.Adapter mHistoryAdapter;
     private RecyclerView.LayoutManager mHistoryLayoutManager;
-
     private TextView mBalance;
-
     private Double Balance = 0.0;
     private ArrayList resultsHistory = new ArrayList<HistoryObject>();
 
@@ -121,6 +119,12 @@ public class HistoryActivity extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Toast.makeText(getApplicationContext(), "Back pressed ", Toast.LENGTH_SHORT).show();
     }
 
     private String getDate(Long time) {

@@ -23,53 +23,58 @@
             android:name=".onAppKilled"
             android:stopWithTask="false" />
 
-        <activity
-            android:name=".MainActivity"
-            android:theme="@style/FullscreenTheme">
+        <activity android:name=".CustomerLoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DriverLoginActivity" />
-        <activity android:name=".CustomerLoginActivity" />
 
-        <!--
-             The API key for Google Maps-based APIs is defined as a string resource.
-             (See the file "res/values/google_maps_api.xml").
-             Note that the API key is linked to the encryption key used to sign the APK.
-             You need a different API key for each encryption key, including the release key that is used to
-             sign the APK for publishing.
-             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
-        -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".DriverMapActivity" />
-        <activity android:name=".CustomerMapActivity" />
-        <activity android:name=".CustomerSettingsActivity" />
-
         <activity
-            android:name=".DriverSettingsActivity"
-            android:parentActivityName=".DriverMapActivity">
+            android:name=".CustomerSettingsActivity"
+            android:parentActivityName=".CustomerMap">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".DriverMapActivity" />
+                android:value=".CustomerMap" />
         </activity>
+
+        <!-- <activity android:name=".driver.DriverLoginActivity" /> -->
+
+
+        <!-- <activity android:name=".driver.DriverMapActivity" /> -->
+
+
+        <!-- <activity -->
+        <!-- android:name=".driver.DriverSettingsActivity" -->
+        <!-- android:parentActivityName=".driver.DriverMapActivity"> -->
+        <!-- <meta-data -->
+        <!-- android:name="android.support.PARENT_ACTIVITY" -->
+        <!-- android:value=".driver.DriverMapActivity" /> -->
+        <!-- </activity> -->
         <activity
             android:name=".HistoryActivity"
-            android:parentActivityName=".DriverMapActivity">
+            android:parentActivityName=".CustomerMap">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".DriverMapActivity" />
+                android:value=".CustomerMap" />
         </activity>
         <activity android:name=".HistorySingleActivity" />
         <activity
             android:name=".CustomerMap"
             android:label="@string/title_activity_customer_map"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".PaymentActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
