@@ -1,2 +1,2 @@
 # Ozeal
-A Taxi booking app
+A Taxi booking app.
